@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Результаты - Парсер вакансий на hh.ru</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/static/css/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Responsive navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container px-5">
+                <a class="navbar-brand" href="/">Парсер вакансий на hh.ru</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/search/">Поиск вакансий</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/results/">Результаты</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page Content-->
+        <div class="container px-4 px-lg-5">
+            <!-- Heading Row-->
+            <div class="card text-white my-5 py-4 text-center">
+                <div class="card-body"><p class="text-white m-0">
+                    {% if vac %}
+                    <p style="color: black"><b>Результаты запроса "{{query_data['query']}}" ({{region}}):</b></p>
+                    <p style="color: black">Найдено вакансий: {{query_data['found']}}, страница {{query_data['page'] + 1}} из {{query_data['pages']}}</p>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Вакансия</th>
+                        </tr>
+                        {% for key, item in vac.items() %}
+                        <tr>
+                            <td style="text-align: left;">
+                                {{item|safe}}
+                                <br><i><b><a href="/vac/?id={{key}}">Подробнее о вакансии</a></b></i>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <br />
+                    <form action="/results/" method="get" class="form-control">
+                        <br /><p style="color: black">Страница <input name="page" type="text" value="{{query_data['page'] + 1}}" size="5" /> из {{query_data['pages']}}
+                        <input type="submit" value="перейти" class="btn btn-secondary"></p>
+                        <a class="btn btn-secondary" href="/results/?prev">Предыдущая страница</a>&nbsp;
+                        <a class="btn btn-secondary" href="/results/?next">Следующая страница</a><br /><br />
+                    </form>
+                    {% endif %}
+                    <br /><br />
+                    <a class="btn btn-secondary" href="/search/">К странице поиска</a>
+                    <br /><br />
+                    <a class="btn btn-secondary" href="/">На главную страницу</a>
+                </div>
+            </div>
+        </div>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container px-4 px-lg-5"><p class="m-0 text-center text-white">Copyright &copy; Bootstrap HH Parser, 2022</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="/static/js/scripts.js"></script>
+    </body>
+</html>
