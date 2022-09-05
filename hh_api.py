@@ -8,16 +8,13 @@ def get_request(data):
     page = data['page']
     region = int(data['region'])
     per_page = 10
-    print('data', data)
     params = {
         'text': query,
         'per_page': per_page,
         'page': page
     }
-    print(f"region {region}")
     if region:
         params['area'] = region
-        print('set region', int(region))
 
     url = f'https://api.hh.ru/vacancies'
 
@@ -116,3 +113,31 @@ def html_to_text(html=''):
     result = re.sub(' +', ' ', result)
     result = re.sub('\n+', '\n', result)
     return result
+
+
+def get_skills(query, region, hh_sql):
+    per_page = 100
+    params = {
+        'text': query,
+        'per_page': per_page,
+        'page': 0
+    }
+    if region:
+        params['area'] = region
+
+    url = f'https://api.hh.ru/vacancies'
+    response = requests.get(url, params=params).json()
+
+    if 'items' not in response:
+        return
+
+    hh_sql.del_query_array(query, region)
+
+    for item in response['items']:
+        id_vac = item['id']
+        url_vac_id = f'https://api.hh.ru/vacancies/{id_vac}?host=hh.ru'
+        response = requests.get(url_vac_id).json()
+        if 'errors' in response:
+            continue
+        if response['key_skills']:
+            hh_sql.put_query(query, region, response['key_skills'])
