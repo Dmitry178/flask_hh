@@ -1,9 +1,8 @@
 import hh_api
-import sql
+import sql_orm
 from flask import Flask, render_template, request, make_response, redirect, url_for
 
 app = Flask(__name__)
-hh_sql = sql.SQL()
 
 
 @app.route("/")
@@ -28,7 +27,7 @@ def results_html():
     else:
         query_data = get_cookies()
         if 'stat' in request.args:
-            hh_api.get_skills(query_data['query'], query_data['region'], hh_sql)
+            hh_api.get_skills(query_data['query'], query_data['region'])
         if 'next' in request.args:
             query_data['page'] = 0 if query_data['page'] + 1 >= query_data['pages'] else query_data['page'] + 1
         if 'prev' in request.args:
@@ -44,7 +43,7 @@ def results_html():
         query_data['found'] = found
         query_data['pages'] = pages
 
-    stat = hh_sql.get_skills_stat(query_data['query'], query_data['region'])
+    stat = sql_orm.get_skills_stat(query_data['query'], query_data['region'])
     resp = make_response(render_template('results.html', vac=vac, query_data=query_data,
                                          region=get_region(query_data['region']), stat=stat))
     set_cookies(resp, query_data)
