@@ -1,6 +1,7 @@
 import requests
 import re
 from pprint import pprint
+import sql_orm
 
 
 def get_request(data):
@@ -115,7 +116,7 @@ def html_to_text(html=''):
     return result
 
 
-def get_skills(query, region, hh_sql):
+def get_skills(query, region):
     per_page = 100
     params = {
         'text': query,
@@ -131,7 +132,7 @@ def get_skills(query, region, hh_sql):
     if 'items' not in response:
         return
 
-    hh_sql.del_query_array(query, region)
+    sql_orm.del_query_array(query, region)
 
     for item in response['items']:
         id_vac = item['id']
@@ -140,4 +141,4 @@ def get_skills(query, region, hh_sql):
         if 'errors' in response:
             continue
         if response['key_skills']:
-            hh_sql.put_query(query, region, response['key_skills'])
+            sql_orm.put_query(query, region, response['key_skills'])
